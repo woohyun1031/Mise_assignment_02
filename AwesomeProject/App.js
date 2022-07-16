@@ -1,112 +1,68 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, { useState, useEffect } from 'react';
+import {Alert,View,Text} from 'react-native';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import Styled from 'styled-components/native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import * as ImagePicker from "react-native-image-picker"
+import CameraRoll from "@react-native-community/cameraroll";
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+const Container = Styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+const Photo = Styled.Image`
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+`;
+const ImagePickerButton = Styled.TouchableOpacity`
+  border-width: 1px;
+  border-radius: 8px;
+  border-color: #CCCCCC;
+  padding: 8px 32px;
+  margin-top: 16px;
+`;
+const Label = Styled.Text``;
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+const App = () => {
+  const [imageSource, setImageSource] = useState();
+
+  useEffect(()=>{
+
+  },[])
+
+  const options = {
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
+
+  const showCameraRoll = ()=> {
+    ImagePicker.launchImageLibrary(options, (response) => {
+      if (response.error) {
+        console.log('LaunchImageLibrary Error: ', response.error);
+      }
+      else {
+        setImageSource(response.uri);
+      }
+    });
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Container>
+      {imageSource && <Photo source={{uri: imageSource}}/>}
+      <ImagePickerButton onPress={showCameraRoll}>
+        <Label>
+            <Text>
+                Show Camera Roll
+            </Text>
+        </Label>
+      </ImagePickerButton>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
